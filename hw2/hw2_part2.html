@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Part 2</title>
+</head>
+<body>
+    <h2>Images</h2>
+    <div>
+            <img src="img/hnf9v18voep31.png" id="img1" alt="meme1" width="600" height="400" border="1">
+            <img src="img/jt7hit0z3kp31.jpg" id="img2" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img2.src,img2)" onmouseout="shrink(img2)">
+            <img src="img/l3rql9i2e9p31.jpg" id="img3" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img3.src,img3)" onmouseout="shrink(img3)">
+            <img src="img/x39ppcwjicp31.jpg" id="img4" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img4.src,img4)" onmouseout="shrink(img4)"> <br>
+            <img src="img/4z49tmtkwvo31.jpg" id="img5" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img5.src,img5)" onmouseout="shrink(img5)">
+            <img src="img/585u301soeo31.jpg" id="img6" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img6.src, img6)" onmouseout="shrink(img6)">
+            <img src="img/s0c2iy32t8p31.jpg" id="img7" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img7.src, img7)" onmouseout="shrink(img7)">
+            <img src="img/r2xgpnbdhzm31.png" id="img8" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img8.src, img8)" onmouseout="shrink(img8)">
+            <img src="img/kvvp34uf16m31.png" id="img9" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img9.src, img9)" onmouseout="shrink(img9)">
+            <img src="img/xvpno8v0fdm31.jpg" id="img10" alt="meme1" width="100" height="70" border="1" onmouseover="enlarge(img10.src,img10)" onmouseout="shrink(img10)">
+    </div>
+    <p>Credits: <a href="https://www.reddit.com/r/ProgrammerHumor/">www.reddit.com/r/ProgrammerHumor/</a></p>
+</body>
+
+<script>
+    function enlarge(a,b){
+        document.getElementById('img1').src = a;
+        b.border= "3";
+    }
+    function shrink(a){
+        document.getElementById('img1').src= "img/hnf9v18voep31.png";
+        a.border = "1";
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Columbia Grad Application - Part 2</title>
+</head>
+
+<body onload="load()">
+    <form id="application" onsubmit="onSubmitFn(); return false;">
+        <!-- Name Info -->
+        <u style="font-size:20px">Name</u><br>
+        First:
+        <input type="text" name="firstname" id="firstname" onfocus="txtFldColor('firstname')" onblur="rmvColor('firstname',-1)">
+        Last:
+        <input type="text" name="lastname" id="lastname" onfocus="txtFldColor('lastname')" onblur="rmvColor('lastname',-1)"><br><br>
+
+        <!-- DOB Info -->
+        <u style="font-size:20px">Date of Birth:</u><br>
+        DOB: (Format: 01/20/1995)
+        <input type="text" name="dob" id="dob" placeholder="Month/Day/Year" onfocus="txtFldColor('dob')" onblur="rmvColor('dob',-1)"><br><br>
+
+        <!-- School Info -->
+        <u style="font-size:20px">School Information</u><br>
+        Current School:
+        <input type="text" name="cur_school" id="cur_school"onfocus="txtFldColor('cur_school')" onblur="rmvColor('cur_school',-1)">
+        Current Grades (GPA):
+        <input type="text" name="gpa" id= "gpa" onfocus="txtFldColor('gpa')" onblur="rmvColor('gpa',-1)"><br><br>
+
+        <!-- Contact Info -->
+        <u style="font-size:20px">Contact Information</u><br>
+        Email Address:
+        <input type="text" name="email" id="email" onfocus="txtFldColor('email')" onblur="rmvColor('email',-1)"><br><br>
+        <!-- Graduate Program Dropdown Menu-->
+        <u style="font-size:20px">Graduate Program</u><br>
+        <select name="program" id="prog" onfocusin="txtFldColor('prog')" onblur="rmvColor('prog',-1)">
+            <option value=""></option>
+            <option value="cs">Computer Science</option>
+            <option value="elecEng">Electrical Engineering</option>
+            <option value="artHist">Art History</option>
+            <option value="music">Music</option>
+        </select><br><br>
+
+        <u style="font-size:20px">General Comments</u><br>
+        <textarea name="comments" id="comments" cols="30" rows="10" onfocusin="txtFldColor('comments')" onblur="rmvColor('comments',-1)"></textarea><br>
+
+        <button name="submitButton" type="submit">Submit</button>
+        <button name="resetButton" type="reset" onclick="resetForm()">Reset Form</button><br>
+    </form>
+
+    <script>
+        function onSubmitFn() {
+            //Retrieve values for required fields (firstname, lastname, email address, graduate program)
+            var firstname = document.getElementById("firstname").value;
+            var lastname = document.getElementById("lastname").value;
+            var email = document.getElementById("email").value;
+            var gradProg = document.getElementById("prog").value;
+            var dob = document.getElementById("dob").value;
+            var errorMsg = "";
+
+            firstname = firstname.trim();
+            lastname = lastname.trim();
+            email = email.trim();
+
+            //Check each field
+            var valid = true;
+            try{
+                if(firstname == null || firstname.length == 0 || lastname == null || lastname.length == 0) throw "Name Missing";
+                
+                if(email == null || email.length == 0) throw "Email Missing";
+                
+                if(gradProg == null || gradProg.length == 0) throw "Grad Program Missing";
+
+
+
+                //If email is present, check if it's valid
+
+                var emailAr1 = email.split("");
+                var countSymbol = 0;
+
+                //Before splitting using @ as marker, check whether multiple @, if so, invalid
+                for (i = 0; i < emailAr1.length; i++) {
+                    if (countSymbol > 1) {
+                        throw "Invalid Email";
+                    }
+                    if (emailAr1[i] == "@") {
+                        countSymbol = countSymbol + 1;
+                    }
+                }
+
+                var emailAr = email.split("@");
+
+                //Check if @ present
+                if (emailAr.length == 1) {
+                    throw "Invalid Email";
+                }
+                //Check if one symbol, must be either a-z or A-Z
+                else if (emailAr[0].length == 1) {
+                    if ((/[^a-zA-Z]/).test(emailAr[0])) {
+                        throw "Invalid Email";
+                    }
+                }
+                //Check if empty before @
+                if (emailAr[0] == "") {
+                    throw "Invalid Email";
+                }
+
+                //Check if whitespace before @
+                for(var a of emailAr[0].split('')){
+                    if(a == ' '){
+                        throw "Invalid Email";
+                    }
+                }
+
+                //Handle information after @
+                var emailAr2 = emailAr[1].split(".");
+
+                //Check less than 3 "."'s
+                if (emailAr2.length > 3) {
+                    throw "Invalid Email";
+                }
+
+                //Empty input after @
+                if (emailAr2[0] == "") {
+                    throw "Invalid Email";
+                    }
+                //No "."'s after @
+                if (emailAr2.length == 1) {
+                    throw "Invalid Email";
+                }
+                //Check each part of email after @ and between "."'s
+                for (i = 0; i < emailAr2.length; i++) {
+                
+                    for(var a of emailAr2[i].split('')){
+                        if(a == ' '){
+                            throw "Invalid Email";
+                        }
+                    }   
+                    if (emailAr2[i].length <= 1) {
+                        //Check if empty between "."'s
+                        if (emailAr2[i] == "") {
+                            throw "Invalid Email";
+                        } 
+                        //Check if there is 1 symbol, it's valid a-z or A-Z
+                        else if ((/[^a-zA-Z]/).test(emailAr2[i])) {
+                            throw "Invalid Email";
+                        }
+                    }
+                }
+                // DOB validation
+                var leapYear = false;
+                //If user input, check that valid
+            
+                var dob_ar = dob.split("/")
+                var monthList = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            
+
+                //Remove leading 0's from month
+                if(dob_ar[0].charAt(0) == '0'){
+                    dob_ar[0] = dob_ar[0].substr(1);
+                }
+                var invalid = ['1','2','3','4','5','6','7','8','9','10','11','12','']
+                if(!invalid.includes(dob_ar[0].toString())){
+                    throw "Invalid DOB"
+                }
+
+                var cur_date = new Date;
+                //Year
+                var year = cur_date.getFullYear();
+                var month = cur_date.getMonth();
+                var day = cur_date.getDay();
+            
+                //check if there are three input areas
+                if (dob_ar.length != 3) {
+                    throw "Invalid DOB"
+                }
+            
+                //Check if date given is valid
+                if(dob_ar[2] > year){
+                    throw "Invalid DOB"
+                }else if(dob_ar[2] == year && dob_ar[0]>(month+1) ){
+                    throw "Invalid DOB"
+                }else if(dob_ar[2] == year && dob_ar[0]==(month+1) && dob_ar[1] > day){
+                    throw "Invalid DOB"
+                }
+
+                //check if year is a leap year
+                if (dob_ar[2] % 400 == 0) {
+                    leapYear = true;
+                } else if (dob_ar[2] % 100 == 0) {
+                    leapYear = false;
+                } else if (dob_ar[2] % 4 == 0) {
+                    leapYear = true;
+                }
+            
+                //check that Month is valid number
+                if (dob_ar[0] < 1 || dob_ar[0] > 12) {
+                    throw "Invalid DOB"
+                }
+
+                //check that day is valid number
+
+                var ignore = false; 
+
+                if(dob_ar[0] == 2 && dob_ar[1] == 29 && leapYear == true){
+                    ignore = true; 
+                }
+
+                //Check if incorrect days for leap year
+                if (dob_ar[0] == 2 && dob_ar[1] == 29 && leapYear == false ){
+                    throw "Invalid DOB"
+                }else if (!ignore &&  (dob_ar[1] > monthList[dob_ar[0]] || dob_ar[1] < 1) ){
+                    throw "Invalid DOB"
+                }
+                //check that Year is valid number
+                if (dob_ar[2] < 1) {
+                    throw "Invalid DOB"
+                }
+            } catch(e){
+                return alert(e);
+            }
+            return window.open("success.html");
+        }
+
+        //Reset Form
+        function resetForm() {    
+            return document.getElementById("application").reset(); 
+        }
+
+        function load(){
+            alert("Welcome to Columbia University");
+            return true;
+        }
+
+        //OnFocus/onBlur stuff 
+
+        function txtFldColor(a){
+            document.getElementById(a).style.background = "#ffff00";
+        }
+        function rmvColor(a,count){
+            console.log(a);
+            var time = setTimeout (colorChng1, 20, a);
+
+            time = setTimeout (colorChng2, 40, a);
+
+            time = setTimeout (colorChng3, 60, a);
+
+            time = setTimeout (colorChng4, 80, a);
+
+            time = setTimeout (colorChng5, 100, a);
+            time = setTimeout (colorChng6, 120, a);
+            time = setTimeout (colorChng7, 140, a);
+            time = setTimeout (colorChng8, 160, a);
+            time = setTimeout (colorChng9, 180, a);
+            time = setTimeout (colorChng10, 200, a);
+
+            
+        }
+        function colorChng1(element){
+            return document.getElementById(element).style.background = "#ffff19";
+        }
+        function colorChng2(element){
+            return document.getElementById(element).style.background = "#ffff32";
+        }
+        function colorChng3(element){
+            return document.getElementById(element).style.background = "#ffff4c";
+        }
+        function colorChng4(element){
+            return document.getElementById(element).style.background = "#ffff66";
+        }
+        function colorChng5(element){
+            return document.getElementById(element).style.background = "#ffff7f";
+        }
+        function colorChng6(element){
+            return document.getElementById(element).style.background = "#ffff99";
+        }
+        function colorChng7(element){
+            return document.getElementById(element).style.background = "#ffffb2";           
+        }
+        function colorChng8(element){
+            return document.getElementById(element).style.background = "#ffffcc";           
+        }
+        function colorChng9(element){
+            return document.getElementById(element).style.background = "#ffffe5";           
+        }
+        function colorChng10(element){
+
+            return document.getElementById(element).style.background = "";
+        }
+
+        
+    </script>
+        
+
+</body>
+</html>
