@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Columbia Grad Application</title>
+</head>
+
+<body>
+    <!-- 
+    Create a HTML page with a form for admission to a graduate program in Columbia University. 
+    
+    The form should have the following fields (in the body part):
+
+    - A textbox each for
+        1. "First Name"
+        2. "Last Name"
+        3. "Date of birth" -- in terms of year, month and day
+        4. "Current school"
+        5. "Current grades"
+        6. "Email address"
+    - A dropdown menu for the "Graduate Program" for admission. You can use as many choices (like computer science, electrical engineering, arts, etc.), as you wish.
+    
+    - A text area for "General comments".
+    - A submit button.
+    - A reset buton.
+    
+    The values in the fields "First Name", "Last Name", "Email address" and "Program" should be mandatory. That is, the user should provide a valid non-null value for the first two fields, and select a valid graduate program for admission. Write two Javascript functions given below:
+
+    "onSubmitFn( )" that is executed if the "Submit" button is pressed. The function should do the following:
+        Check that the "First Name" and "Last Name" fields are non-null values.
+        Check that the email address is not null and has a format "a@b.c" or "a@b.c.d".
+        NOTE: For this HW, we will use only the above two email address formats and nothing else. Here "a", "b", "c" and "d" should be non null valid values with at least a single character. If any of these ("a", "b", "c" or "d") has only one character, it should be in the range 'a-z' or 'A-Z'.
+        Check that the date of birth is valid (e.g., Jun 31 is invalid). You need to check for leap years also.
+        If any of the above conditions are not met, a popup box should come up and give an appropriate error condition.
+        If everything is fine, take to another page that confirms that the application is received. 
+    "onResetFn( )" that is executed if the "Reset" button is pressed. The function should clear the values of the fields of the form.
+    -->
+
+    <form id="application" onsubmit="onSubmitFn(); return false;">
+        <!-- Name Info -->
+        <u style="font-size:20px">Name</u><br>
+        First:
+        <input type="text" name="firstname" id="firstname">
+        Last:
+        <input type="text" name="lastname" id="lastname"><br><br>
+
+        <!-- DOB Info -->
+        <u style="font-size:20px">Date of Birth:</u><br>
+        DOB: (Format: 01/20/1995)
+        <input type="text" name="dob" id="dob" placeholder="Month/Day/Year"><br><br>
+
+        <!-- School Info -->
+        <u style="font-size:20px">School Information</u><br>
+        Current School:
+        <input type="text" name="cur_school">
+        Current Grades (GPA):
+        <input type="text" name="gpa"><br><br>
+
+        <!-- Contact Info -->
+        <u style="font-size:20px">Contact Information</u><br>
+        Email Address:
+        <input type="text" name="email" id="email"><br><br>
+        <!-- Graduate Program Dropdown Menu-->
+        <u style="font-size:20px">Graduate Program</u><br>
+        <select name="program" id="prog" >
+            <option value=""></option>
+            <option value="cs">Computer Science</option>
+            <option value="elecEng">Electrical Engineering</option>
+            <option value="artHist">Art History</option>
+            <option value="music">Music</option>
+        </select><br><br>
+
+        <u style="font-size:20px">General Comments</u><br>
+        <textarea name="comments" cols="30" rows="10"></textarea><br>
+
+        <button name="submitButton" type="submit">Submit</button>
+        <button name="resetButton" type="reset" onclick="resetForm()">Reset Form</button><br>
+    </form>
+
+    <script>
+        function onSubmitFn() {
+            //Retrieve values for required fields (firstname, lastname, email address, graduate program)
+            var firstname = document.getElementById("firstname").value;
+            var lastname = document.getElementById("lastname").value;
+            var email = document.getElementById("email").value;
+            var gradProg = document.getElementById("prog").value;
+            var dob = document.getElementById("dob").value;
+            var errorMsg = "";
+
+            firstname = firstname.trim();
+            lastname = lastname.trim();
+            email = email.trim();
+
+            //Check each field
+            if(firstname == null || firstname.length == 0){
+                errorMsg = errorMsg.concat("First Name Required.\n");
+                return errorMessage(errorMsg)
+            }
+            if(lastname == null || lastname.length == 0){
+                errorMsg = errorMsg.concat("Last Name Required.\n");
+                return errorMessage(errorMsg)
+            }
+            if(email == null || email.length == 0){
+                errorMsg = errorMsg.concat("Email Required.\n");
+                return errorMessage(errorMsg)
+            }
+            if(gradProg == null || gradProg.length == 0){
+                errorMsg = errorMsg.concat("Grad Program Required.\n");
+                return errorMessage(errorMsg)
+            }
+            //If email is present, check if it's valid
+
+            //Before splitting using @ as marker, check whether multiple @, if so, invalid
+            var emailAr1 = email.split("");
+            var countSymbol = 0;
+            for (i = 0; i < emailAr1.length; i++) {
+                if (countSymbol > 1) {
+                    errorMsg = errorMsg.concat("Email is invalid. Too many @ symbols\n");
+                    return errorMessage(errorMsg);
+                }
+                if (emailAr1[i] == "@") {
+                    countSymbol = countSymbol + 1;
+                }
+            }
+
+            var emailAr = email.split("@");
+
+            //Check if @ present
+            if (emailAr.length == 1) {
+                errorMsg = errorMsg.concat("Email is invalid. Missing @ symbol\n");
+                return errorMessage(errorMsg);
+            }
+            //Check if one symbol, must be either a-z or A-Z
+            else if (emailAr[0].length == 1) {
+                if ((/[^a-zA-Z]/).test(emailAr[0])) {
+                    errorMsg = errorMsg.concat("Email is invalid. Must start with a-z or A-Z\n");
+                    return errorMessage(errorMsg);
+                }
+            }
+            //Check if empty before @
+            if (emailAr[0] == "") {
+                errorMsg = errorMsg.concat("Email is invalid. Missing information before @\n");
+                return errorMessage(errorMsg);
+            }
+
+            //Check if whitespace before @
+            for(var a of emailAr[0].split('')){
+                if(a == ' '){
+                    errorMsg = errorMsg.concat("Email is invalid. Extra whitespaces before @ \n");
+                    return errorMessage(errorMsg);
+                }
+            }
+
+            //Handle information after @
+            var emailAr2 = emailAr[1].split(".");
+
+            //Check less than 3 "."'s
+            if (emailAr2.length > 3) {
+                errorMsg = errorMsg.concat("Email is invalid. Too many .'s\n");
+                return errorMessage(errorMsg);
+            }
+
+            //Empty input after @
+            if (emailAr2[0] == "") {
+                    errorMsg = errorMsg.concat("Email is invalid. Missing information after @\n");
+                    return errorMessage(errorMsg);
+                }
+            //No "."'s after @
+            if (emailAr2.length == 1) {
+                errorMsg = errorMsg.concat("Email is invalid. No .'s in second part\n");
+                return errorMessage(errorMsg);
+            }
+            
+            //Check each part of email after @ and between "."'s
+            for (i = 0; i < emailAr2.length; i++) {
+                
+                for(var a of emailAr2[i].split('')){
+                    if(a == ' '){
+                        errorMsg = errorMsg.concat("Email is invalid. Extra whitespaces between .'s \n");
+                        return errorMessage(errorMsg);
+                    }
+                }
+                if (emailAr2[i].length <= 1) {
+                    //Check if empty between "."'s
+                    if (emailAr2[i] == "") {
+                        errorMsg = errorMsg.concat("Email is invalid. Missing information after @ between the .'s\n");
+                        return errorMessage(errorMsg);
+                    } 
+                    //Check if there is 1 symbol, it's valid a-z or A-Z
+                    else if ((/[^a-zA-Z]/).test(emailAr2[i])) {
+                        errorMsg = errorMsg.concat("Email is invalid. Must have a-z or A-Z in @b.c.d\n");
+                        return errorMessage(errorMsg);
+                    }
+                }
+            }
+            
+            // DOB validation
+            var leapYear = false;
+            
+            //If user input, check that valid
+            var dob_ar = dob.split("/")
+            var monthList = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            
+
+            //Remove leading 0's from month
+            if(dob_ar[0].charAt(0) == '0'){
+                dob_ar[0] = dob_ar[0].substr(1);
+            }
+            var invalid = ['1','2','3','4','5','6','7','8','9','10','11','12','']
+            if(!invalid.includes(dob_ar[0].toString())){
+                errorMsg = errorMsg.concat("DOB invalid. Month has invalid 0's\n");
+                return errorMessage(errorMsg);
+            }
+
+            var cur_date = new Date;
+            //Year
+            var year = cur_date.getFullYear();
+            var month = cur_date.getMonth();
+            var day = cur_date.getDay();
+            
+            //check if there are three input areas
+            if (dob_ar.length != 3) {
+                errorMsg = errorMsg.concat("DOB is Invalid. Need Month/Day/Year \n");
+            }
+            
+            //Check if date given is valid
+            if(dob_ar[2] > year){
+                errorMsg = errorMsg.concat("The year entered is in the future. Invalid Birthdate\n");
+                return errorMessage(errorMsg);
+            }else if(dob_ar[2] == year && dob_ar[0]>(month+1) ){
+                errorMsg = errorMsg.concat("The month entered is in the future. Invalid Birthdate\n");
+                return errorMessage(errorMsg);
+            }else if(dob_ar[2] == year && dob_ar[0]==(month+1) && dob_ar[1] > day){
+                errorMsg = errorMsg.concat("The day entered is in the future. Invalid Birthdate\n");
+                return errorMessage(errorMsg);
+            }
+
+            //check if year is a leap year
+            if (dob_ar[2] % 400 == 0) {
+                leapYear = true;
+            } else if (dob_ar[2] % 100 == 0) {
+                leapYear = false;
+            } else if (dob_ar[2] % 4 == 0) {
+                leapYear = true;
+            }
+            
+            //check that Month is valid number
+            if (dob_ar[0] < 1 || dob_ar[0] > 12) {
+                errorMsg = errorMsg.concat("DOB is Invalid. Month must contain 1-12 \n");
+                return errorMessage(errorMsg);
+            }
+
+            //check that day is valid number
+
+            var ignore = false; 
+
+            if(dob_ar[0] == 2 && dob_ar[1] == 29 && leapYear == true){
+                ignore = true; 
+            }
+
+            //Check if incorrect days for leap year
+            if (dob_ar[0] == 2 && dob_ar[1] == 29 && leapYear == false ){
+                errorMsg = errorMsg.concat("DOB is Invalid. Invalid # days for February. Not leap year \n");
+                return errorMessage(errorMsg);
+            }else if (!ignore &&  (dob_ar[1] > monthList[dob_ar[0]] || dob_ar[1] < 1) ){
+                errorMsg = errorMsg.concat("DOB is Invalid. Invalid # days for month \n");
+                return errorMessage(errorMsg);
+            }
+            //check that Year is valid number
+            if (dob_ar[2] < 1) {
+                errorMsg = errorMsg.concat("DOB is Invalid. Year must be greater than 1 \n");
+            }
+            
+            if (!errorMessage(errorMsg)) {
+                return window.open("success.html");
+            }
+        }
+    </script>
+
+    <script>
+        //Returns the error message
+        function errorMessage(a) {
+            if (a.length != 0) {
+                alert(a);
+                return true;
+            }else return false;
+        }
+    </script>
+
+    <script>
+        //Reset Form
+        function resetForm() {    
+            return document.getElementById("application").reset(); 
+        }
+    </script>
+
+</body>
+</html>
